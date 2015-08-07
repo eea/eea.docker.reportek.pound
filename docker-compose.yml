@@ -1,6 +1,11 @@
 pound:
-  build: .
+  image: olimpiurob/eea.docker.reportek.pound
   env_file:
     - pound.env
   ports:
     - "80:80"
+  links:
+  - webapp
+
+webapp:
+  image: razvan3895/nodeserver
