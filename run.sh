@@ -2,6 +2,7 @@
 set -x
 
 CONFIG_FILE='/etc/pound/config.cfg'
+POUND_BIN='/usr/local/sbin/pound'
 PARAMS="-f $CONFIG_FILE"
 
 if [ -f "$CONFIG_FILE" ]; then
@@ -30,8 +31,15 @@ else
       echo "Port ${address[1]}" >> $CONFIG_FILE
       echo 'End' >> $CONFIG_FILE
     done
+  elif tail -n +2 /etc/hosts | grep -vqE '::|localhost'; then
+    tail -n +2  /etc/hosts | grep -vE '::|localhost' | cut -f 1 | sort | uniq | while read ip; do
+      echo 'Backend' >> $CONFIG_FILE
+      echo "Address $ip" >> $CONFIG_FILE
+      echo "Port 80" >> $CONFIG_FILE
+      echo 'End' >> $CONFIG_FILE
+    done
+  fi
   echo 'End' >> $CONFIG_FILE
-  # FIXME: treat case  when no BACKENDS are available in env
 fi
 
-/usr/local/sbin/pound $PARAMS
+exec $POUND_BIN $PARAMS
