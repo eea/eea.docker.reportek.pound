@@ -39,6 +39,25 @@ else
       echo 'End' >> $CONFIG_FILE
     done
   fi
+  if [ ! -z "$STICKY" ]; then
+    echo 'Session' >> $CONFIG_FILE;
+    if [ -z "$SESSIONTYPE" ]; then
+      echo 'Type COOKIE' >> $CONFIG_FILE;
+    elif [ ! -z "$SESSIONTYPE" ]; then
+      echo "Type $SESSIONTYPE" >> $CONFIG_FILE;
+    fi
+    if [ -z "$SESSIONCOOKIE" ]; then
+      echo 'ID "__ac"' >> $CONFIG_FILE;
+    elif [ ! -z "$SESSIONCOOKIE" ]; then
+      echo "ID \"$SESSIONCOOKIE\"" >> $CONFIG_FILE;
+    fi
+    if [ -z "$SESSIONTIMEOUT" ]; then
+      echo 'TTL 300' >> $CONFIG_FILE;
+    elif [ ! -z "$SESSIONTIMEOUT" ]; then
+      echo "TTL $SESSIONTIMEOUT" >> $CONFIG_FILE;
+    fi
+    echo 'End' >> $CONFIG_FILE;
+  fi
   echo 'End' >> $CONFIG_FILE
 fi
 
