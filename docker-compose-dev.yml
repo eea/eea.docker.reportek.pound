@@ -6,6 +6,10 @@ pound:
     - "80:80"
   links:
   - webapp
+  - webapp2
 
 webapp:
+  image: razvan3895/nodeserver
+
+webapp2:
   image: razvan3895/nodeserver

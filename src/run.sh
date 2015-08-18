@@ -5,6 +5,8 @@ CONFIG_FILE='/etc/pound/config.cfg'
 POUND_BIN='/usr/local/sbin/pound'
 PARAMS="-f $CONFIG_FILE"
 
+python /configure.py | j2 --format=json /etc/pound/backends.j2 > /etc/pound/backends.cfg
+
 if [ -f "$CONFIG_FILE" ]; then
   echo 'Using mounted config file'
 else
@@ -31,13 +33,9 @@ else
       echo "Port ${address[1]}" >> $CONFIG_FILE
       echo 'End' >> $CONFIG_FILE
     done
-  elif tail -n +2 /etc/hosts | grep -vqE '::|localhost'; then
-    tail -n +2  /etc/hosts | grep -vE '::|localhost' | cut -f 1 | sort | uniq | while read ip; do
-      echo 'Backend' >> $CONFIG_FILE
-      echo "Address $ip" >> $CONFIG_FILE
-      echo "Port 80" >> $CONFIG_FILE
-      echo 'End' >> $CONFIG_FILE
-    done
+    echo 'End' >> $CONFIG_FILE
+  else
+    echo 'Include "/etc/pound/backends.cfg"' >> $CONFIG_FILE
   fi
   if [ ! -z "$STICKY" ]; then
     echo 'Session' >> $CONFIG_FILE;
@@ -60,5 +58,6 @@ else
   fi
   echo 'End' >> $CONFIG_FILE
 fi
+track_hosts &
 
 exec $POUND_BIN $PARAMS
