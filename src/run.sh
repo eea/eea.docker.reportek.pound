@@ -33,7 +33,6 @@ else
       echo "Port ${address[1]}" >> $CONFIG_FILE
       echo 'End' >> $CONFIG_FILE
     done
-    echo 'End' >> $CONFIG_FILE
   else
     echo 'Include "/etc/pound/backends.cfg"' >> $CONFIG_FILE
   fi
