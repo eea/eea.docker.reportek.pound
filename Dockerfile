@@ -1,4 +1,4 @@
-FROM centos:centos7
+FROM eeacms/centos:7s
 MAINTAINER "Olimpiu Rob" <olimpiu.rob@eaudeweb.ro>
 
 ENV EGGSHOP http://eggshop.eaudeweb.ro
@@ -8,22 +8,18 @@ ENV POUND_SRC $POUND_VERSION$POUND_CUSTOM.tgz
 ENV POUND_URL_PATH $EGGSHOP/$POUND_SRC
 ENV POUND_USER pound
 ENV POUND_GROUP pound
-ENV POUND_HOME /var/lib/pound
+ENV POUND_HOME /opt/pound
 ENV INOTIFY_SRC http://github.com/downloads/rvoicilas/inotify-tools/inotify-tools-3.14.tar.gz
 
-RUN yum install -y \
-    openssl \
-    openssl-devel \
-    gcc \
-    make
-
-RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
-RUN python /tmp/get-pip.py
-RUN pip install j2cli
+RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py" && \
+    python /tmp/get-pip.py && \
+    pip install j2cli && \
+    python3.4 /tmp/get-pip.py && \
+    pip3 install chaperone
 
 RUN mkdir -p $POUND_HOME/install && \
-    groupadd -f -r $POUND_GROUP && \
-    useradd -r -g $POUND_GROUP -d $POUND_HOME -s /sbin/nologin \
+    groupadd -g 500 -f -r $POUND_GROUP && \
+    useradd -u 500 -r -g $POUND_GROUP -d $POUND_HOME -s /sbin/nologin \
     -c "Pound user" $POUND_USER && \
     chown -R $POUND_USER:$POUND_GROUP $POUND_HOME
 
@@ -43,13 +39,14 @@ RUN cd /tmp \
     && make \
     && make install
 
-ADD src/run.sh /usr/bin/run.sh
-RUN chmod a+x /usr/bin/run.sh
-COPY src/reload.sh  /usr/bin/reload
-RUN chmod a+x //usr/bin/reload
 RUN mkdir -p /etc/pound
-COPY src/backends.j2 /etc/pound/backends.j2
-COPY src/configure.py /configure.py
-COPY src/track-hosts.sh /usr/bin/track_hosts
-RUN chmod a+x /usr/bin/track_hosts
-CMD /usr/bin/run.sh
+
+COPY src/chaperone.conf            /etc/chaperone.d/chaperone.conf
+COPY src/docker-setup.sh           /docker-setup.sh
+COPY src/reload.sh                 /reload.sh
+
+COPY src/backends.j2               /etc/pound/backends.j2
+COPY src/configure.py              /configure.py
+COPY src/track-hosts.sh            /track_hosts.sh
+
+ENTRYPOINT ["/usr/bin/chaperone"]

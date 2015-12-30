@@ -1,9 +1,6 @@
 #!/bin/bash
-set -x
-
 CONFIG_FILE='/etc/pound/config.cfg'
 POUND_BIN='/usr/local/sbin/pound'
-PARAMS="-f $CONFIG_FILE"
 
 python /configure.py | j2 --format=json /etc/pound/backends.j2 > /etc/pound/backends.cfg
 
@@ -57,6 +54,3 @@ else
   fi
   echo 'End' >> $CONFIG_FILE
 fi
-track_hosts &
-
-exec $POUND_BIN $PARAMS
