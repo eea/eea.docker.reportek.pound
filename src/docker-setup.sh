@@ -1,15 +1,14 @@
 #!/bin/bash
-CONFIG_FILE='/etc/pound/config.cfg'
-POUND_BIN='/usr/local/sbin/pound'
+CONFIG_FILE='/opt/pound/etc/config.cfg'
 
-python /configure.py | j2 --format=json /etc/pound/backends.j2 > /etc/pound/backends.cfg
+python /opt/configure.py | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
 
 if [ -f "$CONFIG_FILE" ]; then
   echo 'Using mounted config file'
 else
   echo 'User "pound"' > $CONFIG_FILE
   echo 'Group "pound"' >> $CONFIG_FILE
-  echo 'Daemon 0' >> $CONFIG_FILE
+  echo 'Daemon 1' >> $CONFIG_FILE
   echo 'LogLevel 3' >> $CONFIG_FILE
   echo 'LogFacility local1' >> $CONFIG_FILE
 
@@ -18,7 +17,7 @@ else
   if [ ! -z "$TIMEOUT" ]; then echo "TimeOut $TIMEOUT" >> $CONFIG_FILE; fi
   echo 'ListenHTTP' >> $CONFIG_FILE
   echo 'Address 0.0.0.0' >> $CONFIG_FILE
-  echo 'Port 80' >> $CONFIG_FILE
+  echo 'Port 8080' >> $CONFIG_FILE
   echo 'End' >> $CONFIG_FILE
   echo 'Service' >> $CONFIG_FILE
 
@@ -31,7 +30,7 @@ else
       echo 'End' >> $CONFIG_FILE
     done
   else
-    echo 'Include "/etc/pound/backends.cfg"' >> $CONFIG_FILE
+    echo 'Include "/opt/pound/etc/backends.cfg"' >> $CONFIG_FILE
   fi
   if [ ! -z "$STICKY" ]; then
     echo 'Session' >> $CONFIG_FILE;

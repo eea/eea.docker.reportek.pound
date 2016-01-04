@@ -1,4 +1,4 @@
 #!/bin/bash
-POUND_BIN='/usr/local/sbin/pound'
+POUND_BIN='/opt/pound/sbin/pound'
 
-exec $POUND_BIN -f /etc/pound/config.cfg
+exec $POUND_BIN -f /opt/pound/etc/config.cfg

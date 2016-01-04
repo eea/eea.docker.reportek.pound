@@ -1,9 +1,8 @@
 #!/bin/bash
-set -x
-PIDFILE=/var/run/track_hosts.pid
+PIDFILE=/opt/pound/var/track_hosts.pid
 
-(echo "$BASHPID" > $PIDFILE; exec inotifywait -e close_write /etc/hosts) | \
+(echo "$BASHPID" > $PIDFILE; exec inotifywait -e modify -m -q /etc/hosts) | \
 while IFS= read file event; do
-    python /configure.py | j2 --format=json /etc/pound/backends.j2 > /etc/pound/backends.cfg
-    reload
+    python /opt/configure.py | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
+    /opt/reload.sh
 done
