@@ -34,7 +34,7 @@ docker image:
     pound:
       image: eeacms/reportek-pound
       ports:
-      - "80:80"
+      - "8080:8080"
       env_file:
       - pound.env
       links:
@@ -51,7 +51,7 @@ The application can be scaled to use more server instances, with `docker-compose
 
 ### Run with backends specified as environment variable
 
-    $ docker run --env BACKENDS="192.168.1.5:80 192.168.1.6:80" eeacms/reportek-pound:latest
+    $ docker run --env BACKENDS="192.168.1.5:8080 192.168.1.6:8080" eeacms/reportek-pound:latest
 
 The servers are written as `server_ip:server_listening_port`, separated by spaces
 (and enclosed in quotes, to avoid issues). The contents of the variable are
