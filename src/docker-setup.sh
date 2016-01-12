@@ -30,6 +30,7 @@ else
       echo 'End' >> $CONFIG_FILE
     done
   else
+    python /opt/configure.py | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
     echo 'Include "/opt/pound/etc/backends.cfg"' >> $CONFIG_FILE
   fi
   if [ ! -z "$STICKY" ]; then
