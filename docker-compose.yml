@@ -1,5 +1,5 @@
 pound:
-  image: olimpiurob/eea.docker.reportek.pound
+  image: eeacms/reportek-pound
   env_file:
     - pound.env
   ports:
