@@ -1,6 +1,6 @@
 #!/bin/bash
 CONFIG_FILE='/opt/pound/etc/config.cfg'
-set -x
+
 if [ -z $BACKENDS_PORT ]; then
   export BACKENDS_PORT='8080'
 fi

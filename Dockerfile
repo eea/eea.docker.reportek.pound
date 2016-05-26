@@ -53,4 +53,4 @@ RUN mkdir -p $POUND_HOME/var && \
 
 USER $POUND_USER
 
-ENTRYPOINT ["/usr/bin/chaperone", "--debug", "--user=pound"]
+ENTRYPOINT ["/usr/bin/chaperone", "--user=pound"]
