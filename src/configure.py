@@ -1,5 +1,8 @@
-import socket
 import json
+import os
+import socket
+
+BACKENDS_PORT = os.environ.get('BACKENDS_PORT', '8080')
 
 try:
     hosts = open("/etc/hosts")
@@ -16,7 +19,7 @@ for host in hosts:
     if host_ip in [backend["ip"] for backend in backends]:
         continue
     backends.append({"ip": host_ip,
-                     "port": "80"})
+                     "port": BACKENDS_PORT})
 hosts.close()
 print json.dumps({"backends": backends})
 exit(0)

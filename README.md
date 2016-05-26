@@ -86,6 +86,7 @@ by supplying an `.env` file in the appropriate tag.
 * `CLIENT` Specify for how long Pound will wait for a client request - `default` 10 seconds
 * `TIMEOUT` How long should Pound wait for a response from the back-end - `default` 15 seconds
 * `BACKENDS` The servers are written as `server_ip:server_listening_port`, separated by spaces (and enclosed in quotes, to avoid issues)
+* `BACKENDS_PORT` The default port for the backends, this is needed for dynamically discovered hosts - `default` 8080
 * `STICKY` If sticky sessions should be user - `default` off
 * `SESSIONTYPE` Specify SESSIONTYPE
 * `SESSIONCOOKIE` Specify SESSIONCOOKIE
