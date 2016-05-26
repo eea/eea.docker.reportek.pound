@@ -1,5 +1,9 @@
 #!/bin/bash
 CONFIG_FILE='/opt/pound/etc/config.cfg'
+set -x
+if [ -z $BACKENDS_PORT ]; then
+  export BACKENDS_PORT='8080'
+fi
 
 python /opt/configure.py | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
 
@@ -25,8 +29,8 @@ else
     for BACKEND in $(echo "$BACKENDS" | tr ' ' '\n'); do
       echo 'Backend' >> $CONFIG_FILE
       IFS=':' read -a address <<< "$BACKEND"
-      echo "Address ${address[0]}" >> $CONFIG_FILE
-      echo "Port ${address[1]}" >> $CONFIG_FILE
+      echo "Address ${address}" >> $CONFIG_FILE
+      echo "Port ${BACKENDS_PORT}" >> $CONFIG_FILE
       echo 'End' >> $CONFIG_FILE
     done
   else
