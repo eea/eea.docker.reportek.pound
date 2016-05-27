@@ -47,7 +47,8 @@ elif sys.argv[1] == 'dns':
         try:
             records = dns.resolver.query(host)
         except Exception as err:
-            print(err)
+            print(json.dumps({"backends": backends}))
+            exit(0)
         else:
             for ip in records:
                 ips[str(ip)] = host
