@@ -51,6 +51,6 @@ COPY src/backends.j2               /opt/pound/etc/backends.j2
 RUN mkdir -p $POUND_HOME/var && \
     chown -R $POUND_USER:$POUND_GROUP $POUND_HOME
 
-USER $POUND_USER
+#USER $POUND_USER
 
-ENTRYPOINT ["/usr/bin/chaperone", "--debug", "--user=pound"]
+ENTRYPOINT ["/usr/bin/chaperone"]
