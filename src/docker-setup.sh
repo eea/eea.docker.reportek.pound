@@ -1,11 +1,12 @@
 #!/bin/bash
-CONFIG_FILE='/opt/pound/etc/config.cfg'
 set -x
+CONFIG_FILE='/opt/pound/etc/config.cfg'
+
 if [ -z $BACKENDS_PORT ]; then
   export BACKENDS_PORT='8080'
 fi
 
-python /opt/configure.py | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
+# python3 /opt/configure.py | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
 
 if [ -f "$CONFIG_FILE" ]; then
   echo 'Using mounted config file'
@@ -25,7 +26,12 @@ else
   echo 'End' >> $CONFIG_FILE
   echo 'Service' >> $CONFIG_FILE
 
-  if [ ! -z "$BACKENDS" ]; then
+  if [ ! -z "$DNS_ENABLED" ]; then
+  # Backends are resolved using internal or external DNS service
+    python3 /opt/configure.py dns | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
+    touch /opt/dns.backends
+    echo 'Include "/opt/pound/etc/backends.cfg"' >> $CONFIG_FILE
+  elif [ ! -z "$BACKENDS" ]; then
     for BACKEND in $(echo "$BACKENDS" | tr ' ' '\n'); do
       echo 'Backend' >> $CONFIG_FILE
       IFS=':' read -a address <<< "$BACKEND"
@@ -34,6 +40,7 @@ else
       echo 'End' >> $CONFIG_FILE
     done
   else
+    python3 /opt/configure.py hosts | j2 --format=json /opt/pound/etc/backends.j2 > /opt/pound/etc/backends.cfg
     echo 'Include "/opt/pound/etc/backends.cfg"' >> $CONFIG_FILE
   fi
   if [ ! -z "$STICKY" ]; then

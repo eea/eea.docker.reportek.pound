@@ -15,7 +15,7 @@ RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py" && \
     python /tmp/get-pip.py && \
     pip install j2cli && \
     python3.4 /tmp/get-pip.py && \
-    pip3 install chaperone
+    pip3 install chaperone dnspython
 
 RUN mkdir -p $POUND_HOME/install && \
     groupadd -g 500 -f -r $POUND_GROUP && \
@@ -46,6 +46,7 @@ COPY src/reload.sh                 /opt/reload.sh
 
 COPY src/configure.py              /opt/configure.py
 COPY src/track-hosts.sh            /opt/track_hosts.sh
+COPY src/track-dns.sh              /opt/track_dns.sh
 COPY src/backends.j2               /opt/pound/etc/backends.j2
 
 RUN mkdir -p $POUND_HOME/var && \
@@ -53,4 +54,5 @@ RUN mkdir -p $POUND_HOME/var && \
 
 #USER $POUND_USER
 
+#ENTRYPOINT ["/usr/bin/chaperone", "--user=pound"]
 ENTRYPOINT ["/usr/bin/chaperone"]
